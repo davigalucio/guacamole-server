@@ -102,10 +102,10 @@ sudo systemctl restart tomcat"$TOMCAT_VERSION"
 
 sudo apt install nginx -y
 
-cat >> /etc/nginx/sites-available/guacamole << EOL
+cat <<'EOF'>> /etc/nginx/sites-available/guacamole
 server {
     listen      80;
-    server_name $ip1.$ip2.$ip3.$ip4;
+    server_name IP_HOST;
     #rewrite     ^   https://$server_name$request_uri? permanent;
 #}
 
@@ -136,7 +136,9 @@ server {
         access_log off;
     }
 }
-EOL
+EOF
+
+sudo sed -i "s/IP_HOST/$ip1.$ip2.$ip3.$ip4/g" /etc/nginx/sites-available/guacamole
 
 sudo ln -s /etc/nginx/sites-available/guacamole /etc/nginx/sites-enabled/
 sudo nginx -t
@@ -150,4 +152,3 @@ echo "Acesse via broswer http://$ip1.$ip2.$ip3.$ip4/guacamole"
 echo
 echo "Usuario: guacadmin"
 echo "Senha: guacadmin"
-echo

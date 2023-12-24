@@ -1,28 +1,50 @@
+######################################
+# Informações da Instalação          #
+######################################
 GUAC_VERSION=1.5.4
 TOMCAT_VERSION=9
 
+######################################
+# Informações do Banco de Dados      #
+######################################
 GUAC_DB=guac_db
 GUAC_DB_USER=guac_user
 GUAC_DB_USER_PWD=guac_password
 
+######################################
+# Informação do Conector Mysql Java  #
+######################################
 MYSQL_CONNECTOR_JAVA_VERSION=8.2.0
+
+######################################
+# Informação da versão do Debian     #
+######################################
 
 DEBIAN_VERSION_ID=$(cat /etc/*release* | grep VERSION_ID | cut -d '"' -f 2)
 
+######################################
+# Informação do IP atual             #
+######################################
 ip4=$(hostname -I | cut -d '.' -f 4 | cut -d ' ' -f 1)
 ip3=$(hostname -I | cut -d '.' -f 3 | cut -d ' ' -f 1)
 ip2=$(hostname -I | cut -d '.' -f 2 | cut -d ' ' -f 1)
 ip1=$(hostname -I | cut -d '.' -f 1 | cut -d ' ' -f 1)
 
+######################################
+# Repositório Bullseye par o TomCat9 #
+######################################
 echo "deb http://deb.debian.org/debian/ bullseye main" >> /etc/apt/sources.list
 
+######################################
+# Instalação dos Pacotes             #
+######################################
 apt update
 apt-get install sudo wget mariadb-server build-essential uuid-dev freerdp2-dev -y
 apt-get install libcairo2-dev libjpeg62-turbo-dev libtool-bin libossp-uuid-dev libavcodec-dev libavformat-dev libswscale-dev libpango1.0-dev libssh2-1-dev libtelnet-dev libvncserver-dev libwebsockets-dev libpulse-dev libvorbis-dev libwebp-dev -y
 
-
 sudo apt install -y tomcat$TOMCAT_VERSION
 sudo systemctl enable --now tomcat$TOMCAT_VERSION
+
 
 wget -P /opt/ https://dlcdn.apache.org/guacamole/$GUAC_VERSION/source/guacamole-server-"$GUAC_VERSION".tar.gz
 tar -xzf /opt/guacamole-server-"$GUAC_VERSION".tar.gz -C /opt/
@@ -59,11 +81,6 @@ mysql -u root < /etc/guacamole/config.sql
 mysql -u root -e "SELECT user FROM mysql.user;"
 mysql -u root -e "show databases;"
 
-#mysql -u root -e "CREATE DATABASE "$GUAC_DB";"
-#mysql -u root -e "CREATE USER '$GUAC_DB_USER'@'localhost' IDENTIFIED BY '$GUAC_DB_USER_PWD';"
-#mysql -u root -e "GRANT SELECT,INSERT,UPDATE,DELETE ON $GUAC_DB.* TO '$GUAC_DB_USER'@'localhost';"
-#mysql -u root -e "FLUSH PRIVILEGES;"
-
 wget -P /opt/ https://dlcdn.apache.org/guacamole/"$GUAC_VERSION"/binary/guacamole-auth-jdbc-"$GUAC_VERSION".tar.gz
 tar -xf /opt/guacamole-auth-jdbc-"$GUAC_VERSION".tar.gz -C /opt/
 cat /opt/guacamole-auth-jdbc-"$GUAC_VERSION"/mysql/schema/*.sql | mysql -u root $GUAC_DB
@@ -71,10 +88,8 @@ cp /opt/guacamole-auth-jdbc-"$GUAC_VERSION"/mysql/guacamole-auth-jdbc-mysql-"$GU
 
 export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin
 
-
 wget -P /opt/ https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j_"$MYSQL_CONNECTOR_JAVA_VERSION"-1debian"$DEBIAN_VERSION_ID"_all.deb
 dpkg -i /opt/mysql-connector-j_"$MYSQL_CONNECTOR_JAVA_VERSION"-1debian"$DEBIAN_VERSION_ID"_all.deb
-
 
 cp /usr/share/java/mysql-connector-java-"$MYSQL_CONNECTOR_JAVA_VERSION".jar /etc/guacamole/lib/mysql-connector.jar
 
@@ -99,6 +114,10 @@ sudo ln -s /etc/guacamole/guacamole.war /var/lib/tomcat"$TOMCAT_VERSION"/webapps
 
 sudo systemctl restart guacd
 sudo systemctl restart tomcat"$TOMCAT_VERSION"
+
+######################################
+# Instalação NGINX com Proxy Reverso #
+######################################
 
 sudo apt install nginx -y
 
@@ -145,7 +164,9 @@ sudo nginx -t
 
 sudo systemctl restart nginx
 
-
+######################################
+# Autenticação duplo Fator TOTP      #
+######################################
 
 wget -P /opt/ https://dlcdn.apache.org/guacamole/"$GUAC_VERSION"/binary/guacamole-auth-totp-"$GUAC_VERSION".tar.gz
 tar -zxf /opt/guacamole-auth-totp-"$GUAC_VERSION".tar.gz -C /opt/

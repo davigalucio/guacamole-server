@@ -145,8 +145,18 @@ sudo nginx -t
 
 sudo systemctl restart nginx
 
+
+
+wget -P /opt/ https://dlcdn.apache.org/guacamole/"$GUAC_VERSION"/binary/guacamole-auth-totp-"$GUAC_VERSION".tar.gz
+tar -zxf /opt/guacamole-auth-totp-"$GUAC_VERSION".tar.gz -C /opt/
+cp /opt/guacamole-auth-totp-"$GUAC_VERSION"/guacamole-auth-totp-"$GUAC_VERSION".jar /etc/guacamole/extensions/
+sudo systemctl restart guacd
+sudo systemctl restart tomcat"$TOMCAT_VERSION"
+
 echo
 echo "Instalação concluída!"
+echo
+echo "Apache Guacamole Server + MariaDB + Proxy Reverso NGNIX + Autenticação duplo Fator TOTP"
 echo
 echo "Acesse via broswer http://$ip1.$ip2.$ip3.$ip4/guacamole"
 echo

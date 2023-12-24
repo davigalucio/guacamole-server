@@ -1,4 +1,4 @@
-# Instalação do Guacamole Server no Debian 12
+# Instalação do Guacamole Server no Linux Debian 12 com Maria DB e Proxy Reverso com NGINX
 
 apt install -y git
 

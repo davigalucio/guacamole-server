@@ -171,6 +171,14 @@ sudo systemctl restart nginx
 wget -P /opt/ https://dlcdn.apache.org/guacamole/"$GUAC_VERSION"/binary/guacamole-auth-totp-"$GUAC_VERSION".tar.gz
 tar -zxf /opt/guacamole-auth-totp-"$GUAC_VERSION".tar.gz -C /opt/
 cp /opt/guacamole-auth-totp-"$GUAC_VERSION"/guacamole-auth-totp-"$GUAC_VERSION".jar /etc/guacamole/extensions/
+
+####################################
+## CORREÇÃO DE FALHA DE LOGIN RDP ##
+####################################
+cp /etc/systemd/system/guacd.service /etc/systemd/system/guacd.service.bkp
+sudo sed -i "s/User=daemon/User=root/g" /etc/systemd/system/guacd.service
+
+sudo systemctl daemon-reload
 sudo systemctl restart guacd
 sudo systemctl restart tomcat"$TOMCAT_VERSION"
 

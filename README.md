@@ -1,6 +1,6 @@
 # Instalação do Guacamole Server no Debian 12
 
-apt install git
+apt install -y git
 
 git clone https://github.com/davigalucio/guacamole-server.git
 

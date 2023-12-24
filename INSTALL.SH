@@ -9,6 +9,11 @@ MYSQL_CONNECTOR_JAVA_VERSION=8.2.0
 
 DEBIAN_VERSION_ID=$(cat /etc/*release* | grep VERSION_ID | cut -d '"' -f 2)
 
+ip4=$(hostname -I | cut -d '.' -f 4 | cut -d ' ' -f 1)
+ip3=$(hostname -I | cut -d '.' -f 3 | cut -d ' ' -f 1)
+ip2=$(hostname -I | cut -d '.' -f 2 | cut -d ' ' -f 1)
+ip1=$(hostname -I | cut -d '.' -f 1 | cut -d ' ' -f 1)
+
 echo "deb http://deb.debian.org/debian/ bullseye main" >> /etc/apt/sources.list
 
 apt update
@@ -94,3 +99,55 @@ sudo ln -s /etc/guacamole/guacamole.war /var/lib/tomcat"$TOMCAT_VERSION"/webapps
 
 sudo systemctl restart guacd
 sudo systemctl restart tomcat"$TOMCAT_VERSION"
+
+sudo apt install nginx -y
+
+cat >> /etc/nginx/sites-available/guacamole << EOL
+server {
+    listen      80;
+    server_name $ip1.$ip2.$ip3.$ip4;
+    #rewrite     ^   https://$server_name$request_uri? permanent;
+#}
+
+#server {
+    #listen      443 ssl http2;
+    #server_name localhost;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+       try_files $uri $uri/ =404;
+    }
+
+    #ssl_certificate /etc/letsencrypt/live/example.io/fullchain.pem;
+    #ssl_certificate_key /etc/letsencrypt/live/example.io/privkey.pem;
+
+    access_log /var/log/nginx/guacamole-access.log;
+    error_log /var/log/nginx/guacamole-error.log;
+
+    location /guacamole/ {
+        proxy_pass http://127.0.0.1:8080/guacamole/;
+        proxy_buffering off;
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $http_connection;
+        access_log off;
+    }
+}
+EOL
+
+sudo ln -s /etc/nginx/sites-available/guacamole /etc/nginx/sites-enabled/
+sudo nginx -t
+
+sudo systemctl restart nginx
+
+echo
+echo "Instalação concluída!"
+echo
+echo "Acesse via broswer http://$ip1.$ip2.$ip3.$ip4/guacamole"
+echo
+echo "Usuario: guacadmin"
+echo "Senha: guacadmin"
+echo

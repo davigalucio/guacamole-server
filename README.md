@@ -25,6 +25,10 @@ GUAC_DB_USER=guac_user
 GUAC_DB_USER_PWD=guac_password
 
 
+# Extensão Qr Code para os principais navegadores: Authenticator
+
+https://github.com/Authenticator-Extension/Authenticator
+
 Linux Debian 12 minimal: Instalação minima + SSH
 
 Link de download:

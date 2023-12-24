@@ -14,10 +14,13 @@ sh guacamole-server/RESET_TOTP.sh guacadmin
 # Informações da instalação:
 
 GUAC_VERSION=1.5.4
+
 TOMCAT_VERSION=9
 
 GUAC_DB=guac_db
+
 GUAC_DB_USER=guac_user
+
 GUAC_DB_USER_PWD=guac_password
 
 Linux Debian 12 minimal: Instalação minima + SSH

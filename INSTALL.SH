@@ -152,3 +152,4 @@ echo "Acesse via broswer http://$ip1.$ip2.$ip3.$ip4/guacamole"
 echo
 echo "Usuario: guacadmin"
 echo "Senha: guacadmin"
+echo

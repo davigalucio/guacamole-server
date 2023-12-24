@@ -21,8 +21,6 @@ GUAC_DB_USER=guac_user
 GUAC_DB_USER_PWD=guac_password
 
 Linux Debian 12 minimal: Instalação minima + SSH
-
 Link de download:
-
 https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.4.0-amd64-netinst.iso
 

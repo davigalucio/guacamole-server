@@ -25,11 +25,7 @@ DEBIAN_VERSION_ID=$(cat /etc/*release* | grep VERSION_ID | cut -d '"' -f 2)
 ######################################
 # Informação do IP atual             #
 ######################################
-ip4=$(hostname -I | cut -d '.' -f 4 | cut -d ' ' -f 1)
-ip3=$(hostname -I | cut -d '.' -f 3 | cut -d ' ' -f 1)
-ip2=$(hostname -I | cut -d '.' -f 2 | cut -d ' ' -f 1)
-ip1=$(hostname -I | cut -d '.' -f 1 | cut -d ' ' -f 1)
-
+HOST_IP=(hostname -I | head -n1 | cut -f1 -d' ')
 ######################################
 # Repositório Bullseye par o TomCat9 #
 ######################################
@@ -124,7 +120,7 @@ sudo apt install nginx -y
 cat <<'EOF'>> /etc/nginx/sites-available/guacamole
 server {
     listen      80;
-    server_name IP_HOST;
+    server_name HOST_IP;
     #rewrite     ^   https://$server_name$request_uri? permanent;
 #}
 
@@ -157,7 +153,7 @@ server {
 }
 EOF
 
-sudo sed -i "s/IP_HOST/$ip1.$ip2.$ip3.$ip4/g" /etc/nginx/sites-available/guacamole
+sudo sed -i "s/HOST_IP/$HOST_IP/g" /etc/nginx/sites-available/guacamole
 
 sudo ln -s /etc/nginx/sites-available/guacamole /etc/nginx/sites-enabled/
 sudo nginx -t
@@ -187,7 +183,7 @@ echo "Instalação concluída!"
 echo
 echo "Apache Guacamole Server + MariaDB + Proxy Reverso NGNIX + Autenticação duplo Fator TOTP"
 echo
-echo "Acesse via broswer http://$ip1.$ip2.$ip3.$ip4/guacamole"
+echo "Acesse via broswer http://$HOST_IP/guacamole"
 echo
 echo "Usuario: guacadmin"
 echo "Senha: guacadmin"

@@ -25,7 +25,7 @@ DEBIAN_VERSION_ID=$(cat /etc/*release* | grep VERSION_ID | cut -d '"' -f 2)
 ######################################
 # Informação do IP atual             #
 ######################################
-HOST_IP=(hostname -I | head -n1 | cut -f1 -d' ')
+HOST_IP=$(hostname -I | head -n1 | cut -f1 -d' ')
 ######################################
 # Repositório Bullseye par o TomCat9 #
 ######################################
